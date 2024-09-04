@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
+import configs from "./config.js";
 
 export const connectDatabase = () => {
     let DB_URI = "";
 
-    if (process.env.NODE_ENV === "DEVELOPMENT") DB_URI = process.env.DB_URI_DEV;
-    if (process.env.NODE_ENV === "PRODUCTION") DB_URI = process.env.DB_URI_PROD;
+    if (configs.environment === "DEVELOPMENT") DB_URI = configs.mongoDev;
+    if (configs.environment === "PRODUCTION") DB_URI = configs.mongoProd;
 
 
     mongoose.connect(DB_URI).then(con => {

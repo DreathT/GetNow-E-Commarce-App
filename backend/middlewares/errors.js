@@ -1,4 +1,5 @@
 import ErrorHandler from "../utilities/errorHandler.js";
+import configs from "../config/config.js";
 
 export default (err, req, res, next) => {
     let error = {
@@ -18,7 +19,13 @@ export default (err, req, res, next) => {
         error = new ErrorHandler(message, 400)
     }
 
-    if (process.env.NODE_ENV === "DEVELOPMENT") {
+    // // Handle Syntax Error
+    // if (err.name === "SyntaxError") {
+    //     const message = err.name + " " + err.message
+    //     error = new ErrorHandler(message, 400)
+    // }
+
+    if (configs.environment === "DEVELOPMENT") {
         res.status(error.statusCode).json({
             message: error.message,
             error: err,
@@ -26,7 +33,7 @@ export default (err, req, res, next) => {
         })
     }
 
-    if (process.env.NODE_ENV === "PRODUCTION") {
+    if (configs.environment === "PRODUCTION") {
         res.status(error.statusCode).json({
             message: error.message
         })

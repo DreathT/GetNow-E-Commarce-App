@@ -6,23 +6,30 @@ import APIFilters from "../utilities/apiFilters.js";
 // Get Products   ==>   /api/v1/products  
 export const getProducts = catchAsyncErrors(async (req, res) => {
 
-    const resPerPage = 4
+    try {
+        const resPerPage = 4
 
-    const apiFilters = new APIFilters(Product, req.query).search().filters()
+        const apiFilters = new APIFilters(Product, req.query).search().filters()
 
-    let products = await apiFilters.query;
-    let filteredProductsCount = products.length
+        let products = await apiFilters.query;
+        let filteredProductsCount = products.length
 
-    apiFilters.pagination(resPerPage);
-    products = await apiFilters.query.clone();
+        apiFilters.pagination(resPerPage);
+        products = await apiFilters.query.clone();
 
 
-    res.status(200).json({
-        message: "All Products are these...",
-        resPerPage,
-        filteredProductsCount,
-        products
-    });
+        res.status(200).json({
+            message: "All Products are these...",
+            resPerPage,
+            filteredProductsCount,
+            products
+        });
+
+    } catch (error) {
+        return next(new ErrorHandler("Products not found, something is wrong...", 404))
+    }
+
+
 });
 
 // Create new product   ==>   /api/v1/admin/products
