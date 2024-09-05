@@ -15,9 +15,11 @@ app.use(cookieParser())
 // Import all routes
 import productRoutes from "./routes/products.js"
 import authRoutes from "./routes/auth.js"
+import profileRoutes from "./routes/profile.js"
 
 app.use("/api/v1", productRoutes)
 app.use("/api/v1", authRoutes)
+app.use("/api/v1", profileRoutes)
 
 // Middleware to handle errors
 app.use(errorMiddleware)
