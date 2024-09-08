@@ -17,11 +17,13 @@ import productRoutes from "./routes/products.js"
 import authRoutes from "./routes/auth.js"
 import usereRoutes from "./routes/user.js"
 import adminRoutes from "./routes/admin.js"
+import orderRoutes from "./routes/order.js"
 
 app.use("/api/v1", productRoutes)
 app.use("/api/v1", authRoutes)
 app.use("/api/v1", usereRoutes)
 app.use("/api/v1", adminRoutes)
+app.use("/api/v1", orderRoutes)
 
 // Middleware to handle errors
 app.use(errorMiddleware)

@@ -1,9 +1,11 @@
 import ErrorHandler from "../utilities/errorHandler.js";
 import catchAsyncErrors from "../middlewares/catchAsyncErrors.js";
 import User from "../models/user.js";
+import Order from "../models/order.js";
+import Product from "../models/product.js";
 
 // Get all Users   =>   /api/v1/admin/users
-export const getAllUsers = catchAsyncErrors(async (req, res) => {
+export const getAllUsers = catchAsyncErrors(async (req, res, next) => {
 
     const users = await User.find();
 
@@ -14,9 +16,10 @@ export const getAllUsers = catchAsyncErrors(async (req, res) => {
 });
 
 // Get user details   =>   /api/v1/admin/user/:id
-export const getUserDetails = catchAsyncErrors(async (req, res) => {
+export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
 
     const user = await User.findById(req?.params.id);
+
 
     if (!user) {
         return next(new ErrorHandler(`User not found with this ID: ${req?.params?.id}`, 404));
@@ -29,7 +32,7 @@ export const getUserDetails = catchAsyncErrors(async (req, res) => {
 });
 
 // Update user details   =>   /api/v1/admin/update/user/:id
-export const updateUserDetails = catchAsyncErrors(async (req, res) => {
+export const updateUserDetails = catchAsyncErrors(async (req, res, next) => {
 
     const newUserData = {
         name: req.body.name,
@@ -48,7 +51,7 @@ export const updateUserDetails = catchAsyncErrors(async (req, res) => {
 });
 
 // Delete user   =>   /api/v1/admin/delete/user/:id
-export const deleteUser = catchAsyncErrors(async (req, res) => {
+export const deleteUser = catchAsyncErrors(async (req, res, next) => {
 
     const user = await User.findById(req?.params?.id);
 
@@ -62,6 +65,71 @@ export const deleteUser = catchAsyncErrors(async (req, res) => {
 
     res.status(200).json({
         message: `User deleted successfully ${req?.params?.id}.`
-    })
+    });
 
-})
+});
+
+// Get All Orders   =>   /api/v1/admin/orders
+export const getAllOrders = catchAsyncErrors(async (req, res, next) => {
+
+    const orders = await Order.find();
+
+    res.status(200).json({
+        orders
+    });
+
+});
+
+// Update Order   =>   /api/v1/admin/orders/:id
+export const updateOrder = catchAsyncErrors(async (req, res, next) => {
+
+    const order = await Order.findById(req?.params?.id);
+
+    if (!order) {
+        return next(new ErrorHandler("Order not found with this ID", 404));
+    }
+
+    if (order.orderStatus === "Delivered") {
+        return next(new ErrorHandler("You have already delivered this order", 400));
+    }
+
+    // Update product stock
+    if (order.orderStatus !== "Shipped") { // My own rule => can be problem later
+        order?.orderItems?.forEach(async item => {
+            const product = await Product.findById(item?.product?.toString());
+            if (!product) {
+                return next(new ErrorHandler("Product not found with this ID", 404));
+            }
+            product.stock = product.stock - item.quantity;
+            await product.save()
+        });
+    }
+
+
+    order.orderStatus = req.body.status;
+    order.deliveredAt = Date.now();
+
+    await order.save();
+
+    res.status(200).json({
+        order,
+    });
+
+});
+
+// Delete Order   =>   /api/v1/admin/order/:id
+export const deleteOrder = catchAsyncErrors(async (req, res, next) => {
+
+    const order = await Order.findById(req?.params?.id)
+
+    if (!order) {
+        return next(new ErrorHandler("Order not found with this ID", 404));
+    }
+
+    await order.deleteOne();
+
+    res.status(200).json({
+        message: `Order deleted successfully ${req?.params?.id}`
+    });
+
+});

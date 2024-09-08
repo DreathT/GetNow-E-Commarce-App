@@ -76,7 +76,7 @@ export const getProductDetails = catchAsyncErrors(async (req, res, next) => {
 export const updateProduct = catchAsyncErrors(async (req, res) => {
     try {
         let product = await Product.findById(req?.params?.id);
-        product = await Product.findByIdAndUpdate(req?.params?.id, req.body, { new: true })
+        product = await Product.findByIdAndUpdate(req?.params?.id, req.body, { new: true }) // new: true parametre basicly working for put, does not allow other parameters to be null
         res.status(200).json({
             product
         });
