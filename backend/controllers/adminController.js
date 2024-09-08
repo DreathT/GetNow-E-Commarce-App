@@ -133,3 +133,26 @@ export const deleteOrder = catchAsyncErrors(async (req, res, next) => {
     });
 
 });
+
+// Delete Product Review   ==>   /api/v1/review
+export const deleteReview = catchAsyncErrors(async (req, res, next) => {
+
+    const product = await Product.findById(req?.query?.productId);
+
+    if (!product) {
+        return next(new ErrorHandler("Product not found", 404));
+    }
+
+    product.reviews = product?.reviews?.filter(review => review._id.toString() !== req?.query?.id.toString());
+
+    product.numOfReviews = product.reviews.length;
+
+    product.ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
+
+    await product.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+        success: true,
+    })
+
+});
