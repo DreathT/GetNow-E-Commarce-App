@@ -137,22 +137,25 @@ export const deleteOrder = catchAsyncErrors(async (req, res, next) => {
 // Delete Product Review   ==>   /api/v1/review
 export const deleteReview = catchAsyncErrors(async (req, res, next) => {
 
-    const product = await Product.findById(req?.query?.productId);
+    let product = await Product.findById(req?.query?.productId);
 
     if (!product) {
         return next(new ErrorHandler("Product not found", 404));
     }
 
-    product.reviews = product?.reviews?.filter(review => review._id.toString() !== req?.query?.id.toString());
+    const reviews = product?.reviews?.filter(review => review._id.toString() !== req?.query?.id.toString());
 
-    product.numOfReviews = product.reviews.length;
+    console.log(reviews)
 
-    product.ratings = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
+    const numOfReviews = reviews.length;
 
-    await product.save({ validateBeforeSave: false });
+    const ratings = numOfReviews === 0 ? 0 : reviews.reduce((acc, item) => item.rating + acc, 0) / numOfReviews;
+
+    product = await Product.findByIdAndUpdate(req.query.productId, { reviews, numOfReviews, ratings }, { new: true })
 
     res.status(200).json({
         success: true,
+        product
     })
 
 });
