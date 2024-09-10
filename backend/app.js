@@ -3,6 +3,7 @@ import { connectDatabase } from "./config/dbConnect.js";
 import errorMiddleware from "./middlewares/errors.js"
 import configs from "./config/config.js";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const app = express();
 
@@ -11,6 +12,7 @@ connectDatabase()
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(cors())
 
 // Import all routes
 import productRoutes from "./routes/products.js"

@@ -18,18 +18,13 @@ class APIFilters {
 
     filters() {
         const queryCopy = { ...this.queryStr }
-        console.log(queryCopy)
         // Field to remove
         const fieldsToRemove = ["keyword", "page"];
         fieldsToRemove.forEach((element) => delete queryCopy[element]);
 
-        console.log(queryCopy)
-
         // Advance filter for price, rating etc...
         let queryStr = JSON.stringify(queryCopy)
-        console.log(queryStr)
         queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (match) => '$' + match)  // /g means global ... \b means to capture whole word
-        console.log(queryStr)
         this.query = this.query.find(JSON.parse(queryStr))
         return this
     }
