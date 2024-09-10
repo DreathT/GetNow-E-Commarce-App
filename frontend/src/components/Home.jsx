@@ -1,15 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react'
 import MetaData from './layout/MetaData'
+import { useSearchParams } from 'react-router-dom';
 import { useGetProductsQuery } from '../redux/api/productsApi'
 import ProductItem from './product/ProductItem';
 import Loader from './layout/Loader';
 import toast from 'react-hot-toast';
+import CustomPagination from './layout/CustomPagination';
 
 
 const Home = () => {
 
-    const { data, isLoading, error, isError } = useGetProductsQuery();
+    let [searchParams] = useSearchParams();
+    const page = Number(searchParams.get("page")) || 1;
+
+    const params = { page };
+
+    const { data, isLoading, error, isError } = useGetProductsQuery(params);
     console.log("data: ", data, "isLoading: ", isLoading)
 
     useEffect(() => {
@@ -34,6 +41,9 @@ const Home = () => {
                    ))}
                 </div>
                 </section>
+
+                   <CustomPagination resPerPage={data?.resPerPage} filteredProductsCount={data?.filteredProductsCount}/>
+
             </div>
         </div>
     </>
