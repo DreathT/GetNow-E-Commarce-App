@@ -7,14 +7,16 @@ import ProductItem from './product/ProductItem';
 import Loader from './layout/Loader';
 import toast from 'react-hot-toast';
 import CustomPagination from './layout/CustomPagination';
+import Filters from './layout/Filters';
 
 
 const Home = () => {
 
     let [searchParams] = useSearchParams();
-    const page = Number(searchParams.get("page")) || 1;
+    const page = searchParams.get("page") || 1;
+    const keyword = searchParams.get("keyword") || "";
 
-    const params = { page };
+    const params = { page, keyword };
 
     const { data, isLoading, error, isError } = useGetProductsQuery(params);
     console.log("data: ", data, "isLoading: ", isLoading)
@@ -25,27 +27,34 @@ const Home = () => {
         }
     }, [isError])
 
+    const columnSize = keyword ? 4 : 3
+
     if(isLoading) return <Loader />
 
   return (
     <>
         <MetaData title={"Come and GetNow"}/>
         <div className="row">
-            <div className="col-12 col-sm-6 col-md-12">
-                <h1 id="products_heading" className="text-secondary">Latest Products</h1>
-
-                <section id="products" className="mt-5">
-                <div className="row">
-                   {data?.products?.map((product) => (
-                    <ProductItem product={product}/>
-                   ))}
+            {keyword && (
+                <div className='col-6 col-md-3 m-5'>
+                    <Filters />
                 </div>
+            )}
+            <div className={keyword ? "col-12 col-md-10" : "col-12 col-md-12"}>
+                <h1 id="products_heading" className="text-secondary">
+                {keyword ? `${data?.products?.length} Products found with keyword: ${keyword}` : "Latest Products"}
+                </h1>
+                <section id="products" className="mt-5">
+                    <div className="row">
+                        {data?.products?.map((product) => (            
+                            <ProductItem product={product} columnSize={columnSize} />
+                        ))}
+                    </div>
                 </section>
-
-                   <CustomPagination resPerPage={data?.resPerPage} filteredProductsCount={data?.filteredProductsCount}/>
-
+                <CustomPagination resPerPage={data?.resPerPage} filteredProductsCount={data?.filteredProductsCount}/>
             </div>
         </div>
+
     </>
   )
 }
