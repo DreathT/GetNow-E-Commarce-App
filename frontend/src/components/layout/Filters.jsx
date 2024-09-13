@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const Filters = () => {
+
+  const [min, setMin] = useState(0);
+  const [max, setMax] = useState(0);
+
   return (
     <div className="border p-3 filter">
       <h3>Filters</h3>
@@ -19,7 +23,8 @@ const Filters = () => {
               className="form-control"
               placeholder="Min ($)"
               name="min"
-              value=""
+              value={min}
+              onChange={(e) => setMin(e.target.value)}
             />
           </div>
           <div className="col">
@@ -28,7 +33,8 @@ const Filters = () => {
               className="form-control"
               placeholder="Max ($)"
               name="max"
-              value=""
+              value={max}
+              onChange={(e) => setMax(e.target.value)}
             />
           </div>
           <div className="col">

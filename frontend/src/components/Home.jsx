@@ -36,11 +36,11 @@ const Home = () => {
         <MetaData title={"Come and GetNow"}/>
         <div className="row">
             {keyword && (
-                <div className='col-6 col-md-3 m-5'>
+                <div className='col col-md-3 mt-5'>
                     <Filters />
                 </div>
             )}
-            <div className={keyword ? "col-12 col-md-10" : "col-12 col-md-12"}>
+            <div className={keyword ? "col col-8 col-md-13" : "col-6 col-md-12"}>
                 <h1 id="products_heading" className="text-secondary">
                 {keyword ? `${data?.products?.length} Products found with keyword: ${keyword}` : "Latest Products"}
                 </h1>
@@ -53,6 +53,11 @@ const Home = () => {
                 </section>
                 <CustomPagination resPerPage={data?.resPerPage} filteredProductsCount={data?.filteredProductsCount}/>
             </div>
+        </div>
+
+        <div className="row">
+            <div className="col">sa</div>
+            <div className="col">as</div>
         </div>
 
     </>
