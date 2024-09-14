@@ -1,9 +1,25 @@
 import React, { useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { getPriceQueryParams } from '../../helpers/helpers';
 
 const Filters = () => {
 
   const [min, setMin] = useState(0);
   const [max, setMax] = useState(0);
+
+  const navigate = useNavigate();
+  let [searchParams] = useSearchParams();
+
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+
+    searchParams = getPriceQueryParams(searchParams, "min", min)
+    searchParams = getPriceQueryParams(searchParams, "max", max)
+
+    const path = window.location.pathname + "?" + searchParams.toString();
+    navigate(path);
+
+  }
 
   return (
     <div className="border p-3 filter">
@@ -13,8 +29,7 @@ const Filters = () => {
       <form
         id="filter_form"
         className="px-2"
-        action="your_action_url_here"
-        method="get"
+        onSubmit={handleButtonClick}
       >
         <div className="row">
           <div className="col">
