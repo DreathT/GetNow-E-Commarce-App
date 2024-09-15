@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getPriceQueryParams } from '../../helpers/helpers';
 import { PRODUCT_CATEGORIES } from '../../constants/constants';
+import StarRatings from "react-star-ratings";
 
 const Filters = () => {
 
@@ -12,8 +14,8 @@ const Filters = () => {
   let [searchParams] = useSearchParams();
 
   useEffect(() => {
-    searchParams.has("min") && setMin(searchParams.has("min"));
-    searchParams.has("max") && setMax(searchParams.has("max"));
+    searchParams.has("min") && setMin(searchParams.get("min"));
+    searchParams.has("max") && setMax(searchParams.get("max"));
   }, []);
 
   // Handle Price Filter
@@ -105,47 +107,49 @@ const Filters = () => {
       <h5 className="mb-3">Category</h5>
 
       {PRODUCT_CATEGORIES?.map((category) => (
-        <div className="form-check">
+        <div className="form-check" key={category.id}>
           <input
             className="form-check-input"
             type="checkbox"
             name="category"
             id="check4"
-            value={category}
-            defaultChecked={defaultCheckHandler("category", category)}
+            value={category.name}
+            defaultChecked={defaultCheckHandler("category", category.name)}
             onClick={(e) => handleClick(e.target)}
           />
-          <label className="form-check-label" for="check4"> {category} </label>
+          <label className="form-check-label" for="check4"> {category.name} </label>
         </div>
       ))}
 
       <hr />
       <h5 className="mb-3">Ratings</h5>
 
-      <div className="form-check">
+      {[5,4,3,2,1].map((rating) => (
+        <div className="form-check" key={rating}>
         <input
           className="form-check-input"
           type="checkbox"
           name="ratings"
           id="check7"
-          value="5"
+          value={rating}
+          defaultChecked={defaultCheckHandler("ratings", rating?.toString())}
+          onClick={(e) => handleClick(e.target)}
         />
         <label className="form-check-label" for="check7">
-          <span className="star-rating">★ ★ ★ ★ ★</span>
+          <StarRatings 
+            rating={rating}  
+            starRatedColor='#ffb829'
+            numberOfStars={5}
+            name='rating'
+            starDimension='21px'
+            starSpacing='2px'
+          />
         </label>
       </div>
-      <div className="form-check">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          name="ratings"
-          id="check8"
-          value="4"
-        />
-        <label className="form-check-label" for="check8">
-          <span className="star-rating">★ ★ ★ ★ ☆</span>
-        </label>
-      </div>
+      ))}
+
+      
+    
     </div>
   )
 }

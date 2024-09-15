@@ -18,14 +18,17 @@ const Home = () => {
     const min = searchParams.get("min");
     const max = searchParams.get("max");
     const category = searchParams.get("category");
+    const ratings = searchParams.get("ratings");
 
     const params = { page, keyword };
 
     min !== null && (params.min = min);
     max !== null && (params.max = max);
     category !== null && (params.category = category);
-    
+    ratings !== null && (params.ratings = ratings)
     const { data, isLoading, error, isError } = useGetProductsQuery(params);
+
+    console.log(params)
 
     useEffect(() => {
         if(isError) {
@@ -59,11 +62,6 @@ const Home = () => {
                 </section>
                 <CustomPagination resPerPage={data?.resPerPage} filteredProductsCount={data?.filteredProductsCount}/>
             </div>
-        </div>
-
-        <div className="row">
-            <div className="col">sa</div>
-            <div className="col">as</div>
         </div>
 
     </>
