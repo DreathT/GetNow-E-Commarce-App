@@ -1,36 +1,45 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { useRegisterMutation } from '../../redux/api/authApi'
 import toast from 'react-hot-toast';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
 
-    const [user, setUser] = useState({name:"", email: "", password:""})
+  const navigate = useNavigate();
 
-    const {name, email, password} = user;
+  const [user, setUser] = useState({name:"", email: "", password:""})
 
-    const [register, { isLoading, error, data}] = useRegisterMutation();
+  const {name, email, password} = user;
 
-    useEffect(() => {
-        if(error) {
-            toast.error(error?.data?.message);
-        }
-    }, [error]);
+  const [register, { isLoading, error}] = useRegisterMutation();
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
-    const submitHandler = (e) => {
-        e.preventDefault();
-
-        const signUpData = {
-            name,
-            email,
-            password
-        };
-
-        register(signUpData)
+  useEffect(() => {
+    if(isAuthenticated) {
+      navigate("/");
     }
-
-    const onChange = (e) => {
-        setUser({...user, [e.target.name]: e.target.value})
+    if(error) {
+        toast.error(error?.data?.message);
     }
+  }, [error, isAuthenticated]);
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+
+    const signUpData = {
+        name,
+        email,
+        password
+    };
+
+    register(signUpData)
+  }
+
+  const onChange = (e) => {
+    setUser({...user, [e.target.name]: e.target.value})
+  }
 
   return (
     <div className="row wrapper">
