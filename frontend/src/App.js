@@ -1,12 +1,10 @@
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
-import Home from "./components/Home";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
-import ProductDetails from "./components/product/ProductDetails";
-import Login from "./components/auth/Login";
-import Register from "./components/auth/Register";
+import RouterConfig from "./router/routerConfig";
+
 
 function App() {
   return (
@@ -16,12 +14,7 @@ function App() {
         <Header />
 
         <div className="container">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Routes>
+          <RouterConfig />
         </div>
 
         <Footer />
